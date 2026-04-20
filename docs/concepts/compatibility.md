@@ -1,19 +1,41 @@
 # Printer compatibility
 
-The Expedy tag language is designed for:
+## Expedy Cloud Printer (IoT device)
 
-- **Expedy cloud thermal receipt printers** (official hardware).
-- **ESC/POS-compatible thermal printers** in general.
+The Expedy cloud thermal receipt printer is a **connected IoT device** — unlike standard ticket printers on the market, it connects directly to the internet via **Ethernet or SIM 3G/4G**. This allows it to receive print jobs remotely without any intermediate computer or driver.
 
-Other printer families reached through a Raspberry Pi (`devices` resource) cover non-thermal media such as shipping labels, product labels with expiry date + weight, gift cards or photo prints.
+This is what makes the Expedy printer fundamentally different from all other ESC/POS receipt printers: a standard Epson, Citizen or Star ticket printer has no internet connectivity and cannot receive cloud print commands on its own.
 
-> Other brands may be compatible — the list will be completed over time as more models are certified. If you need confirmation for a specific model, contact Expedy support.
+## ESC/POS thermal receipt printers (via Raspberry Pi USB)
 
-## Known-good USB printer examples (as reported by the device scan endpoint)
+Thermal receipt printers that speak **ESC/P or ESC/POS** (the industry-standard command set) are compatible for:
 
-These manufacturers/models have been returned by `GET /devices/{device_uid}/usb/conf` in live deployments — they are examples, **not an exhaustive compatibility matrix**:
+- **Building and formatting receipts** using the Expedy tag language
+- **Local USB printing** via a Raspberry Pi (`devices` resource)
 
-- Datamax-O'Neil E-Class MarkIII
-- Caysn thermal printers (80 mm)
+However, these printers **cannot receive print jobs directly from the Expedy cloud** — they are not connected to the internet. A Raspberry Pi acts as the local bridge.
 
-Use [`GET /devices/{device_uid}/usb/scan`](../api/devices/usb/scan-ports.md) followed by [`GET /devices/{device_uid}/usb/scan/read`](../api/devices/usb/get-scan-result.md) to discover what your Raspberry Pi actually sees on each USB port.
+Common ESC/POS receipt printer brands and example models:
+
+| Brand | Example models |
+|-------|---------------|
+| Epson | TM-T20, TM-T20II, TM-T88V, TM-T88VI, TM-T70, TM-U220 |
+| Citizen | CT-S310, CT-S310II, CT-S651, CT-E351, CT-S4000 |
+| Star Micronics | TSP143, TSP654, TSP700II, SP742 |
+| Bixolon | SRP-350III, SRP-330II |
+| Sewoo | LK-T212, LK-T312 |
+| SNBC | BTP-R880NP |
+
+## Label, document and photo printers (via Raspberry Pi USB)
+
+The Raspberry Pi USB API (`devices` resource) also supports label and document printers, including brands such as **Netum**, **Zebra**, **Brother**, Datamax-O'Neil, and many others.
+
+Use [`GET /devices/{device_uid}/usb/scan`](../api/devices/usb/scan-ports.md) followed by [`GET /devices/{device_uid}/usb/scan/read`](../api/devices/usb/get-scan-result.md) to discover what your Raspberry Pi sees on each USB port, then [`GET /devices/{device_uid}/usb/conf`](../api/devices/usb/get-configuration.md) to retrieve the detected printer model.
+
+## USB-compatible printers (non-exhaustive list)
+
+The following printers have been reported as compatible with the Raspberry Pi USB connection. This list is **not exhaustive and not guaranteed** — compatibility depends on your OS and driver availability.
+
+The list is based on the open-source [Gutenprint / GIMP-Print](https://gimp-print.sourceforge.io/) driver database. The full upstream list is available at [gimp-print.sourceforge.io/p_Supported_Printers.php](https://gimp-print.sourceforge.io/p_Supported_Printers.php).
+
+<!-- PRINTER LIST START — paste the Brand/Model table here -->
