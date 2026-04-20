@@ -36,4 +36,6 @@ Use [`GET /devices/{device_uid}/usb/scan`](../api/devices/usb/scan-ports.md) fol
 
 The following printers have been reported as compatible with the Raspberry Pi USB connection. This list is **not exhaustive and not guaranteed** — compatibility depends on your OS and driver availability.
 
+The list is based on the open-source [Gutenprint / GIMP-Print](https://gimp-print.sourceforge.io/) driver database. The full upstream list is available at [gimp-print.sourceforge.io/p_Supported_Printers.php](https://gimp-print.sourceforge.io/p_Supported_Printers.php).
+
 <!-- PRINTER LIST START — paste the Brand/Model table here -->
