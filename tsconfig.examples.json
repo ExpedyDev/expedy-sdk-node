@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "paths": {
+      "expedy-sdk-node": ["./src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "examples/**/*"],
+  "exclude": ["dist", "node_modules"]
+}
