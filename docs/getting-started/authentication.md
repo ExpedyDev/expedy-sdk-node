@@ -15,7 +15,7 @@ Both credentials are issued in your Expedy account:
 
 ```bash
 curl -X POST "https://www.expedy.fr/api/v2/printers/XG9DMFPKB2C/print" \
-  -H "Authorization: 24c0bc32c30519c2bdb42c9a8f2021648db591f5:9a9b7963cd1c09a2233ced40185e1c5998f8a999" \
+  -H "Authorization: xxxxxxxxxxxxxxxxxx:xxxxxxxxxxxxxxxxxxx" \
   -H "Content-Type: application/json" \
   -d '{"printer_msg":"<C>Hello</C><BR><CUT/>"}'
 ```
