@@ -1,5 +1,9 @@
 # expedy-sdk-node
 
+[![npm version](https://img.shields.io/npm/v/expedy-sdk-node.svg)](https://www.npmjs.com/package/expedy-sdk-node)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/expedydev/expedy-sdk-node/blob/main/LICENSE)
+[![types: TypeScript](https://img.shields.io/badge/types-TypeScript-3178c6.svg)](https://www.typescriptlang.org/)
+
 Official Node.js SDK + API documentation for the **Expedy Print API v2**. Send print jobs to Expedy cloud thermal receipt printers and to Raspberry Pi gateways driving third-party USB printers (labels, inkjet, laser, photo). Alternative to Google Cloud Print.
 
 - **Printers (`printers`)** — Expedy cloud thermal receipt printers ([product page](https://www.expedy.io/fr/product)).
@@ -36,18 +40,18 @@ const { request_uid } = await client.printers.createPrintJob(
 console.log(`Queued job ${request_uid}`);
 ```
 
-Full walkthrough: [docs/getting-started/quickstart.md](./docs/getting-started/quickstart.md).
+Full walkthrough: [docs/getting-started/quickstart.md](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/getting-started/quickstart.md).
 
 ## Documentation
 
-The complete reference lives under [`docs/`](./docs/README.md). Key entry points:
+The complete reference lives under [`docs/`](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/README.md). Key entry points:
 
-- [Printers vs. devices](./docs/concepts/printers-vs-devices.md) — which resource to use.
-- [Authentication](./docs/getting-started/authentication.md) — `Authorization: <API_SID>:<API_TOKEN>`.
-- [Create a print job](./docs/api/printers/create-print-job.md) — flagship endpoint.
-- [Text layout tags](./docs/receipt-layout/text-layout-tags.md) — full tag reference.
-- [Device actions](./docs/device-actions/autocut.md) — `<CUT/>`, `<PULSE/>`.
-- [Parameter tags](./docs/parameter-tags/wifi.md) — Wi-Fi, NTP, APN, keep-alive, audible beep.
+- [Printers vs. devices](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/concepts/printers-vs-devices.md) — which resource to use.
+- [Authentication](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/getting-started/authentication.md) — `Authorization: <API_SID>:<API_TOKEN>`.
+- [Create a print job](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/api/printers/create-print-job.md) — flagship endpoint.
+- [Text layout tags](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/receipt-layout/text-layout-tags.md) — full tag reference.
+- [Device actions](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/device-actions/autocut.md) — `<CUT/>`, `<PULSE/>`.
+- [Parameter tags](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/parameter-tags/wifi.md) — Wi-Fi, NTP, APN, keep-alive, audible beep.
 
 ## SDK surface
 
@@ -74,11 +78,11 @@ client.devices.wifi.deleteSsid(deviceUid, wifiId);
 client.devices.wifi.applyUpdate(deviceUid);
 ```
 
-Runnable examples live under [`examples/`](./examples).
+Runnable examples live under [`examples/`](https://github.com/expedydev/expedy-sdk-node/tree/main/examples).
 
 ## Compatibility
 
-The Expedy tag language targets **Expedy cloud thermal printers** and **ESC/POS-compatible printers**. Other brands may be compatible through the Raspberry Pi gateway — the supported list will be completed over time. See [docs/concepts/compatibility.md](./docs/concepts/compatibility.md).
+The Expedy tag language targets **Expedy cloud thermal printers** and **ESC/POS-compatible printers**. Other brands may be compatible through the Raspberry Pi gateway — the supported list will be completed over time. See [docs/concepts/compatibility.md](https://github.com/expedydev/expedy-sdk-node/blob/main/docs/concepts/compatibility.md).
 
 ## License
 
