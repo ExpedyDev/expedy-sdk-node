@@ -31,7 +31,7 @@ Give your receipts a professional look by adding a company logo, a product image
 
 ## Graphic mode (58 / 80 mm thermal printers)
 
-When using the [Cloud Print Box](https://www.expedy.io/fr/produit/adaptateur-usb-cloud-print-server/), the image printing mode is set in the Expedy console under **Printers → Select printer**.
+When using the [Cloud Print Box](https://www.expedy.io/raspberry-pi), the image printing mode is set in the Expedy console under **Printers → Select printer**.
 
 | Mode | Notes |
 | --- | --- |
