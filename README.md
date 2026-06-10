@@ -6,8 +6,8 @@
 
 Official Node.js SDK + API documentation for the **Expedy Print API v2**. Send print jobs to Expedy cloud thermal receipt printers and to Raspberry Pi gateways driving third-party USB printers (labels, inkjet, laser, photo). Alternative to Google Cloud Print.
 
-- **Printers (`printers`)** — Expedy cloud thermal receipt printers ([product page](https://www.expedy.io/fr/product)).
-- **Devices (`devices`)** — Expedy Raspberry Pi gateways ([product page](https://www.expedy.io/fr/raspberry-pi)) driving USB printers.
+- **Printers (`printers`)** — Expedy cloud thermal receipt printers ([product page](https://www.expedy.io/product)).
+- **Devices (`devices`)** — Expedy Raspberry Pi gateways ([product page](https://www.expedy.io/raspberry-pi)) driving USB printers.
 
 > `displays` and `medias` are **out of scope** for this repository — they will be documented separately.
 
