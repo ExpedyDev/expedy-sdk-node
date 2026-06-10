@@ -1,6 +1,6 @@
 {
   "name": "expedy-sdk-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official Node.js SDK for the Expedy Print API v2 — send print jobs to cloud thermal receipt printers and Raspberry Pi gateways.",
   "type": "module",
   "main": "./dist/index.js",
