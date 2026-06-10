@@ -59,10 +59,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/expedydev/expedy-sdk-node.git"
+    "url": "git+https://github.com/ExpedyDev/expedy-sdk-node.git"
   },
   "bugs": {
-    "url": "https://github.com/expedydev/expedy-sdk-node/issues"
+    "url": "https://github.com/ExpedyDev/expedy-sdk-node/issues"
   },
   "homepage": "https://docs.expedy.io",
   "devDependencies": {

@@ -3,6 +3,7 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  workflow_dispatch: # allow manual "Run workflow" from the Actions tab
 
 permissions:
   contents: read
