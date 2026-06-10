@@ -5,7 +5,7 @@ The Expedy API splits its hardware into two resources. Picking the right one is 
 | | `printers` | `devices` |
 | --- | --- | --- |
 | **What it is** | A direct connection to an **Expedy cloud thermal receipt printer**. | A connection to an **Expedy-managed gateway** (today: Raspberry Pi) driving a third-party USB printer. |
-| **Hardware** | [Expedy cloud printer](https://www.expedy.io/fr/product) (thermal). | [Expedy Raspberry Pi](https://www.expedy.io/fr/raspberry-pi) + any supported USB printer plugged into it. |
+| **Hardware** | [Expedy cloud printer](https://www.expedy.io/product) (thermal). | [Expedy Raspberry Pi](https://www.expedy.io/raspberry-pi) + any supported USB printer plugged into it. |
 | **Print endpoint** | `POST /printers/{printer_uid}/print` | `POST /devices/{device_uid}/usb/{usb_port}/print` |
 | **Payload field** | `printer_msg` | `usb_msg` |
 | **Typical media** | 58 / 80 / 104 mm thermal receipt paper. | Labels (shipping, product, gift card), A4 paper, photo paper — anything the attached printer supports. |
