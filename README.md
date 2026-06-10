@@ -84,6 +84,14 @@ Runnable examples live under [`examples/`](https://github.com/ExpedyDev/expedy-s
 
 The Expedy tag language targets **Expedy cloud thermal printers** and **ESC/POS-compatible printers**. Other brands may be compatible through the Raspberry Pi gateway — the supported list will be completed over time. See [docs/concepts/compatibility.md](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/concepts/compatibility.md).
 
+## Supply chain
+
+Releases are published from GitHub Actions with [npm provenance](https://docs.npmjs.com/generating-provenance-statements) — a signed attestation linking each version to its source commit and build. Verify it with:
+
+```bash
+npm audit signatures
+```
+
 ## License
 
 MIT
