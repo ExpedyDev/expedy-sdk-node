@@ -24,6 +24,7 @@ Content-Type: `application/json`
 | --- | --- | --- | --- |
 | `printer_msg` | string | yes | The ticket content. Plain UTF-8 text mixed with XML-like tags that drive layout, actions and printer parameters. See [how to build a ticket](#building-the-printer_msg-payload). |
 | `origin` | string | no | Free-form identifier echoed in the Expedy console — useful to trace which system / feature / order emitted the job (e.g. `"pos/checkout"`, `"kitchen/prep-slip"`). |
+| `printer_han` | string | no | Script used to compose the receipt: `cn` Chinese, `kr` Korean, `jp` Japanese (`1` accepted as a synonym of `cn`). Omit for Latin scripts. **Required for Chinese/Japanese/Korean text** — without it every such character prints as `?`. See [Asian characters](../../receipt-layout/asian-characters.md). |
 
 ### Building the `printer_msg` payload
 
@@ -40,12 +41,27 @@ Full tag reference:
 - [Autocut](../../device-actions/autocut.md) — `<CUT/>`
 - Parameter tags: [Wi-Fi](../../parameter-tags/wifi.md), [audible beep](../../parameter-tags/audible-beep.md), [NTP](../../parameter-tags/ntp-clock.md), [APN](../../parameter-tags/apn-mobile-data.md), [keep-alive](../../parameter-tags/keep-alive.md)
 
+### Chinese, Japanese and Korean text
+
+CJK characters need the `printer_han` field or they print as `?` — see
+[Asian characters](../../receipt-layout/asian-characters.md) for the full explanation and examples.
+
+```ts
+await client.printers.createPrintJob(printerUid, {
+  printer_msg: "<C><BOLD>주문 #1234</BOLD></C><BR><CUT/>",
+  printer_han: "kr",
+});
+```
+
 ## Response — 200 OK
+
+A `200` confirms the job was **accepted and queued** — not that it printed. See
+[delivery and idempotency](../../concepts/delivery-and-idempotency.md).
 
 | Field | Type | Description |
 | --- | --- | --- |
 | `request_uid` | string | Unique identifier for the queued print job. |
-| `request_timestamp` | string | Unix timestamp (seconds) when the platform accepted the job. |
+| `request_timestamp` | string | Unix timestamp (seconds) when the platform accepted the job. Returned by the API but not part of the documented response contract — treat it as optional. |
 
 ```json
 {
@@ -107,4 +123,7 @@ const response = await fetch(
 ## See also
 
 - [Printers vs. devices](../../concepts/printers-vs-devices.md) — when to use this endpoint instead of the USB variant.
+- [Asian characters](../../receipt-layout/asian-characters.md) — `printer_han` for Chinese, Japanese and Korean.
+- [Delivery and idempotency](../../concepts/delivery-and-idempotency.md) — what `200` actually means, and how to avoid double prints.
+- [Errors](../../getting-started/errors.md) — status codes and the `ExpedyApiError` shape.
 - [Generic receipt sample](../../samples/generic-receipt.md) — a full `printer_msg` with logo, text, QR and cut.

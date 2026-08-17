@@ -1,6 +1,7 @@
 # expedy-sdk-node
 
 [![npm version](https://img.shields.io/npm/v/expedy-sdk-node.svg)](https://www.npmjs.com/package/expedy-sdk-node)
+[![npm downloads](https://img.shields.io/npm/dm/expedy-sdk-node.svg)](https://www.npmjs.com/package/expedy-sdk-node)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/LICENSE)
 [![types: TypeScript](https://img.shields.io/badge/types-TypeScript-3178c6.svg)](https://www.typescriptlang.org/)
 
@@ -42,22 +43,43 @@ console.log(`Queued job ${request_uid}`);
 
 Full walkthrough: [docs/getting-started/quickstart.md](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/getting-started/quickstart.md).
 
+## Chinese, Japanese, Korean
+
+CJK text needs the `printer_han` field or it prints as `?` — no single-byte code page
+carries Hanzi, Kana or Hangul, so without it every such character is silently replaced
+before the job reaches the printer.
+
+```ts
+await client.printers.createPrintJob(printerUid, {
+  printer_msg: "<C><BOLD>주문 #1234</BOLD></C><BR><CUT/>",
+  printer_han: "kr", // "cn" Chinese · "kr" Korean · "jp" Japanese
+});
+```
+
+Details, gotchas and examples: [docs/receipt-layout/asian-characters.md](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/asian-characters.md).
+
 ## Documentation
 
-The complete reference lives under [`docs/`](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/README.md). Key entry points:
+The complete reference lives under [`docs/`](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/README.md), and the same content is published at [docs.expedy.io](https://docs.expedy.io/). Key entry points:
 
 - [Printers vs. devices](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/concepts/printers-vs-devices.md) — which resource to use.
 - [Authentication](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/getting-started/authentication.md) — `Authorization: <API_SID>:<API_TOKEN>`.
 - [Create a print job](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/api/printers/create-print-job.md) — flagship endpoint.
 - [Text layout tags](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/text-layout-tags.md) — full tag reference.
+- [Asian characters](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/asian-characters.md) — `printer_han` for Chinese, Japanese, Korean.
 - [Device actions](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/device-actions/autocut.md) — `<CUT/>`, `<PULSE/>`.
 - [Parameter tags](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/parameter-tags/wifi.md) — Wi-Fi, NTP, APN, keep-alive, audible beep.
+- [Delivery and idempotency](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/concepts/delivery-and-idempotency.md) — what `200` means, and how to avoid double prints.
+- [Errors](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/getting-started/errors.md) — status codes and the `ExpedyApiError` shape.
+- [Integrations index](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/integrations.md) — no-code / e-commerce / delivery platforms (Zapier, Shopify, WooCommerce, Uber Eats, …).
+- [`openapi.yaml`](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/openapi.yaml) — OpenAPI 3.1 spec for all 14 endpoints.
+- [`AGENTS.md`](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/AGENTS.md) — condensed reference for coding agents (Claude Code, Cursor, Copilot…).
 
 ## SDK surface
 
 ```ts
 client.printers.list();
-client.printers.createPrintJob(printerUid, { printer_msg, origin? });
+client.printers.createPrintJob(printerUid, { printer_msg, origin?, printer_han? });
 
 client.devices.list();
 client.devices.get(deviceUid);
@@ -70,7 +92,7 @@ client.devices.system.shutdown(deviceUid);
 client.devices.usb.getConfiguration(deviceUid);
 client.devices.usb.scan(deviceUid);
 client.devices.usb.readScan(deviceUid);
-client.devices.usb.createPrintJob(deviceUid, usbPort, { usb_msg, notification_url?, origin? });
+client.devices.usb.createPrintJob(deviceUid, usbPort, { usb_msg, notification_url?, origin?, printer_han? });
 
 client.devices.wifi.getConfiguration(deviceUid);
 client.devices.wifi.addSsid(deviceUid, { wifi_ssid, wifi_psk });

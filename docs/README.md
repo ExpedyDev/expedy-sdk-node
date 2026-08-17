@@ -10,6 +10,8 @@ Welcome. This documentation covers the **Expedy Print API v2**, the HTTP surface
 2. [Concepts → Printer compatibility](./concepts/compatibility.md) — short, honest list of what's known to work today.
 3. [Getting started → Authentication](./getting-started/authentication.md) — how the `Authorization` header is built.
 4. [Getting started → Quickstart](./getting-started/quickstart.md) — send your first print job in ~10 lines of Node.
+5. [Concepts → Delivery and idempotency](./concepts/delivery-and-idempotency.md) — what a `200` response actually guarantees, and how to avoid double prints.
+6. [Getting started → Errors](./getting-started/errors.md) — status codes and the `ExpedyApiError` shape.
 
 ## API reference
 
@@ -37,6 +39,7 @@ Everything below gets embedded **inside the `printer_msg` string** you POST to `
 - [QR code](./receipt-layout/qr-code.md)
 - [EAN-13 barcode](./receipt-layout/ean13-barcode.md)
 - [PDF](./receipt-layout/print-pdf.md)
+- [Asian characters (Chinese / Japanese / Korean) — `printer_han`](./receipt-layout/asian-characters.md)
 - [Remove the "Printed using Expedy.io" footer](./receipt-layout/expedy-mention.md)
 
 ### Device actions
@@ -58,3 +61,15 @@ Everything below gets embedded **inside the `printer_msg` string** you POST to `
 - [Generic notification](./samples/generic-notification.md)
 
 Business-specific samples (restaurant, photo booth, promo QR, etc.) live in separate repositories.
+
+## Integrations
+
+Not building a custom integration? [`docs/integrations.md`](./integrations.md) indexes the
+no-code / e-commerce / delivery platforms that connect to Expedy PRINT without writing any
+code (Zapier, Make, n8n, Shopify, WooCommerce, Uber Eats, and more).
+
+## For AI agents
+
+[`AGENTS.md`](../AGENTS.md) at the repository root is a condensed reference meant to be read
+by coding agents (Claude Code, Cursor, Copilot…) — the two resources, the auth format, the
+`printer_han` pitfall, and where to find the rest.

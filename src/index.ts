@@ -18,7 +18,11 @@ export type {
   WifiConfigurationResponse,
   AddSsidRequest,
 } from "./types/device.js";
-export type { RequestOptions } from "./types/common.js";
+export type {
+  RequestOptions,
+  PrinterHan,
+  PrinterHanScript,
+} from "./types/common.js";
 export {
   PrintersResource,
 } from "./resources/printers.js";

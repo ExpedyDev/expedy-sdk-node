@@ -1,7 +1,7 @@
 {
   "name": "expedy-sdk-node",
-  "version": "1.0.2",
-  "description": "Official Node.js SDK for the Expedy Print API v2 — send print jobs to cloud thermal receipt printers and Raspberry Pi gateways.",
+  "version": "1.1.0",
+  "description": "Official Node.js SDK for the Expedy Print API v2 — send print jobs (including Chinese/Japanese/Korean text) to cloud thermal receipt printers and Raspberry Pi gateways.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -15,7 +15,9 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md",
+    "openapi.yaml"
   ],
   "sideEffects": false,
   "engines": {
@@ -25,6 +27,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
     "typecheck:examples": "tsc --noEmit -p tsconfig.examples.json",
+    "test": "npm run build && node --test \"test/*.test.mjs\"",
     "clean": "rm -rf dist",
     "prepack": "npm run clean && npm run build"
   },
@@ -48,9 +51,17 @@
     "raspberry-pi",
     "raspberry-pi-printer",
     "label-printer",
+    "label-printing",
     "sdk",
     "node-sdk",
-    "typescript"
+    "typescript",
+    "openapi",
+    "cjk",
+    "chinese",
+    "japanese",
+    "korean",
+    "unicode",
+    "kitchen-printer"
   ],
   "license": "MIT",
   "author": {

@@ -14,6 +14,7 @@ Receipts are built using XML-like tags embedded in the `printer_msg` (or `usb_ms
 - A space counts as **1 character**.
 - A line break is automatically treated as a new line.
 - Some ESC/POS printers may have different limits depending on font size and encoding set in their firmware.
+- These limits describe single-byte Latin text. Printing Chinese, Japanese or Korean requires the `printer_han` field and typically halves the characters that fit per line — see [Asian characters](./asian-characters.md).
 
 ## Tags
 
@@ -88,6 +89,12 @@ Opens the cash drawer connected to the printer.
 ```
 
 See the [open cash drawer](../device-actions/open-cash-drawer.md) page.
+
+### `printer_han` — Chinese, Japanese, Korean
+
+Not a layout tag — a request body field. Required whenever `printer_msg` / `usb_msg`
+contains CJK text, or those characters print as `?`. See the dedicated
+[Asian characters](./asian-characters.md) page.
 
 ## Full example
 
