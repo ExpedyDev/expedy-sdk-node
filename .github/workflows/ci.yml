@@ -20,4 +20,4 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm run typecheck:examples
-      - run: node --test "test/*.test.mjs"
+      - run: node --test test/*.test.mjs
