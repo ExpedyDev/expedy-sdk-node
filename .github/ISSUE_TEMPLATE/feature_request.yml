@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a new SDK method, type, doc page, or example.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's missing?
+      description: What are you trying to do that the SDK / docs don't currently support?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: A method signature, a new doc page, an example — whatever fits.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workaround you're currently using.
+    validations:
+      required: false

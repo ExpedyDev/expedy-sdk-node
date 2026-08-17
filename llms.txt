@@ -1,0 +1,64 @@
+# expedy-sdk-node
+
+> Official Node.js SDK + API documentation for the Expedy Print API v2. Send print jobs
+> (including Chinese, Japanese and Korean text) to Expedy cloud thermal receipt printers
+> and to Raspberry Pi gateways driving third-party USB printers. Alternative to Google
+> Cloud Print.
+
+Two hardware resources: `printers` (Expedy cloud thermal receipt printers) and `devices`
+(Raspberry Pi gateways driving USB printers). `displays` and `medias` are out of scope.
+
+## Start here
+
+- [README](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/README.md): install,
+  quickstart, SDK surface.
+- [AGENTS.md](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/AGENTS.md): condensed
+  reference for coding agents — the non-obvious gotchas (auth format, `printer_han`, `200`
+  ≠ printed).
+- [docs/README.md](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/README.md):
+  full documentation, with a recommended reading order.
+- [openapi.yaml](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/openapi.yaml):
+  OpenAPI 3.1 description of all 16 operations.
+
+## Core concepts
+
+- [Printers vs. devices](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/concepts/printers-vs-devices.md):
+  which resource to use.
+- [Authentication](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/getting-started/authentication.md):
+  `Authorization: <API_SID>:<API_TOKEN>`, no Bearer/Basic prefix.
+- [Delivery and idempotency](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/concepts/delivery-and-idempotency.md):
+  a `200` means accepted and queued, not printed; no de-duplication.
+- [Errors](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/getting-started/errors.md):
+  `ExpedyError` / `ExpedyApiError`, status codes by endpoint.
+
+## Building a receipt payload
+
+- [Text layout tags](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/text-layout-tags.md):
+  `<BR>`, `<BOLD>`, `<C>`, `<CB>`, `<L>`, `<W>`, `<CUT/>`, `<PULSE/>`.
+- [Images and logos](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/image-and-logo-printing.md):
+  `<IMG>`.
+- [QR code](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/qr-code.md):
+  `<QR>`.
+- [EAN-13 barcode](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/ean13-barcode.md):
+  `<EAN>`.
+- [PDF](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/print-pdf.md):
+  `<PDF>`.
+- [Asian characters](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/receipt-layout/asian-characters.md):
+  `printer_han` for Chinese, Japanese and Korean — without it, CJK text prints as `?`.
+- [Parameter tags](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/parameter-tags/wifi.md):
+  Wi-Fi, NTP, APN, keep-alive, audible beep.
+
+## Examples
+
+- [examples/](https://github.com/ExpedyDev/expedy-sdk-node/tree/main/examples): one
+  runnable TypeScript file per feature — quickstart, receipt layout tags, images, QR,
+  barcodes, Asian characters, device actions, Wi-Fi provisioning, Raspberry Pi USB
+  printing.
+
+## Optional
+
+- [Integrations index](https://github.com/ExpedyDev/expedy-sdk-node/blob/main/docs/integrations.md):
+  no-code / e-commerce / delivery platforms that connect to Expedy PRINT without writing
+  code.
+- [Canonical documentation site](https://docs.expedy.io/): same content, plus hardware
+  setup and maintenance guides out of this repository's scope.

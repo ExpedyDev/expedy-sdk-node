@@ -1,0 +1,739 @@
+openapi: 3.1.0
+info:
+  title: Expedy Print API
+  version: "2.0.0"
+  summary: >-
+    Send print jobs to Expedy cloud thermal receipt printers and to Raspberry
+    Pi gateways driving third-party USB printers.
+  description: >-
+    Unofficial-but-maintained OpenAPI description of the Expedy Print API v2,
+    published alongside the official Node.js SDK
+    (https://github.com/ExpedyDev/expedy-sdk-node). Covers the two hardware
+    resources exposed by the API: `printers` (Expedy cloud thermal receipt
+    printers) and `devices` (Raspberry Pi gateways driving USB printers).
+    `displays` and `medias` are out of scope.
+  license:
+    name: MIT
+    url: https://github.com/ExpedyDev/expedy-sdk-node/blob/main/LICENSE
+  contact:
+    name: Expedy
+    url: https://www.expedy.io
+externalDocs:
+  description: Full documentation
+  url: https://docs.expedy.io/
+servers:
+  - url: https://www.expedy.fr/api/v2
+    description: Production
+
+security:
+  - expedyAuth: []
+
+tags:
+  - name: printers
+    description: Expedy cloud thermal receipt printers.
+  - name: devices
+    description: Raspberry Pi gateways.
+  - name: system
+    description: Remote device control (ping, reboot, shutdown, firmware update).
+  - name: usb
+    description: USB ports on a Raspberry Pi gateway and the printers attached to them.
+  - name: wifi
+    description: Wi-Fi configuration of a Raspberry Pi gateway.
+
+paths:
+  /printers/all:
+    get:
+      operationId: listPrinters
+      summary: List printers
+      description: Return every Expedy cloud thermal printer owned by the authenticated account.
+      tags: [printers]
+      responses:
+        "200":
+          description: Array of printer objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Printer"
+              example:
+                - printer_uid: UP3VS5JXRYA
+                  printer_name: Lobby
+                  printer_status: "1"
+                  printer_width: "58"
+                  printer_graphic_mode: "0"
+                  printer_print_mode: "0"
+                - printer_uid: MMAAZ112PI
+                  printer_name: Kitchen
+                  printer_status: "1"
+                  printer_width: "80"
+                  printer_graphic_mode: "0"
+                  printer_print_mode: "0"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /printers/{printer_uid}/print:
+    post:
+      operationId: createPrintJob
+      summary: Create a print job
+      description: >-
+        Queue a ticket on an Expedy cloud thermal receipt printer. A `200`
+        confirms the job was accepted and queued — not that it printed.
+        Delivery is asynchronous.
+      tags: [printers]
+      parameters:
+        - $ref: "#/components/parameters/PrinterUid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePrintJobRequest"
+            example:
+              printer_msg: "<C><BOLD>ORDER #1234</BOLD></C><BR><CUT/>"
+              origin: pos-kitchen-01
+      responses:
+        "200":
+          description: Job accepted and queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatePrintJobResponse"
+              example:
+                request_uid: 2XVXPN95E7RHYFJZCGMK8DSB634
+                request_timestamp: "1776680582"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+
+  /devices/all:
+    get:
+      operationId: listDevices
+      summary: List devices
+      description: Return every Raspberry Pi gateway owned by the authenticated account.
+      tags: [devices]
+      responses:
+        "200":
+          description: Array of device objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Device"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}:
+    get:
+      operationId: getDevice
+      summary: Get a device
+      description: Return the summary and status of a single Raspberry Pi gateway.
+      tags: [devices]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          description: Device summary.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/ping:
+    get:
+      operationId: pingDevice
+      summary: Ping a device
+      description: >-
+        Ask the device to ping back the platform. Combined with a subsequent
+        read of `last_ping`, this is a reliable way to confirm the device is
+        online.
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/update:
+    get:
+      operationId: updateDeviceFirmware
+      summary: Update device firmware
+      description: Initiate a software update on the device if any is available.
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/reboot:
+    get:
+      operationId: rebootDevice
+      summary: Reboot a device
+      description: Trigger a remote reboot of the Raspberry Pi.
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/shutdown:
+    get:
+      operationId: shutdownDevice
+      summary: Shut a device down
+      description: >-
+        Shut the Raspberry Pi down remotely. Use with care: once shut down,
+        the device cannot be started again without physical access.
+      tags: [system]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/usb/conf:
+    get:
+      operationId: getUsbConfiguration
+      summary: Get USB configuration
+      description: Return the last known USB port configuration of the device.
+      tags: [usb]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          description: Last known configuration of every USB port.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsbConfigurationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/usb/scan:
+    get:
+      operationId: scanUsbPorts
+      summary: Scan USB ports
+      description: >-
+        Trigger a fresh scan of the device's USB ports for any compatible
+        printer connected. Use `GET /usb/scan/read` afterwards to read the
+        result.
+      tags: [usb]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/usb/scan/read:
+    get:
+      operationId: getUsbScanResult
+      summary: Get USB scan result
+      description: Return the device's last known USB scan result.
+      tags: [usb]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          description: Same shape as `GET /usb/conf`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsbConfigurationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/usb/{usb_port}/print:
+    post:
+      operationId: createUsbPrintJob
+      summary: Create a USB print job
+      description: >-
+        Queue a print job on a printer attached to one of the device's USB
+        ports. A `200` confirms the job was accepted and queued — not that it
+        printed. A port only accepts jobs once a printer has been detected and
+        configured on it.
+      tags: [usb]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+        - name: usb_port
+          in: path
+          required: true
+          description: USB port number (typically `1` to `4`).
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUsbPrintJobRequest"
+            example:
+              usb_msg: "<C><BOLD>ORDER #1234</BOLD></C><BR><CUT/>"
+              notification_url: https://www.example.com/print-callback
+              origin: pos-kitchen-01
+      responses:
+        "200":
+          description: Job accepted and queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUsbPrintJobResponse"
+              example:
+                last_ping: 1641509604
+                request_uid: 1X5ERXL94BYVWHP92DK3MCASUGJ
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          description: Unknown `device_uid`, or no configured printer on that `usb_port`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "405":
+          description: Wrong HTTP method — this endpoint is `POST` only.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "422":
+          description: Empty or malformed `usb_msg`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: The job could not be handed to the device.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /devices/{device_uid}/wifi/conf:
+    get:
+      operationId: getWifiConfiguration
+      summary: Get Wi-Fi configuration
+      description: Return the Wi-Fi SSIDs currently stored on the device. PSKs are masked.
+      tags: [wifi]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          description: Stored Wi-Fi configuration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WifiConfigurationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/wifi/add:
+    put:
+      operationId: addWifiSsid
+      summary: Add an SSID
+      description: >-
+        Add a new SSID to the device's Wi-Fi configuration. The change is not
+        applied until `GET /wifi/update` is called.
+      tags: [wifi]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddSsidRequest"
+      responses:
+        "200":
+          description: Same shape as `GET /wifi/conf`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WifiConfigurationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/wifi/{wifi_id}/del:
+    patch:
+      operationId: deleteWifiSsid
+      summary: Delete an SSID
+      description: >-
+        Remove an SSID from the device's Wi-Fi configuration. The change is
+        not applied until `GET /wifi/update` is called.
+      tags: [wifi]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+        - name: wifi_id
+          in: path
+          required: true
+          description: ID of the SSID entry to remove, as returned by `GET /wifi/conf`.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Same shape as `GET /wifi/conf`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WifiConfigurationResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /devices/{device_uid}/wifi/update:
+    get:
+      operationId: applyWifiUpdate
+      summary: Apply Wi-Fi update
+      description: Push any pending Wi-Fi configuration change (add / delete SSID) to the device.
+      tags: [wifi]
+      parameters:
+        - $ref: "#/components/parameters/DeviceUid"
+      responses:
+        "200":
+          $ref: "#/components/responses/LastPingOk"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+components:
+  securitySchemes:
+    expedyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: >-
+        Raw `<API_SID>:<API_TOKEN>` value, colon-separated, with **no**
+        `Bearer` or `Basic` prefix. Both values are issued in the Expedy
+        console under **API**.
+
+  parameters:
+    PrinterUid:
+      name: printer_uid
+      in: path
+      required: true
+      description: >-
+        Unique ID of the target printer. Obtain it from `GET /printers/all`
+        or the Expedy console.
+      schema:
+        type: string
+      example: WP0RGS1SEDZ
+    DeviceUid:
+      name: device_uid
+      in: path
+      required: true
+      description: The device's unique ID, as found in your Expedy account.
+      schema:
+        type: string
+      example: MMAAZ112PI
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid credentials (`SID` / `TOKEN`).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Forbidden:
+      description: Missing or invalid credentials, or the resource does not belong to this account.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    UnprocessableEntity:
+      description: The request could not be processed — e.g. an unknown UID or a malformed body.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    LastPingOk:
+      description: Command accepted.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DeviceLastPing"
+          example:
+            last_ping: 1641509604
+
+  schemas:
+    ErrorEnvelope:
+      type: object
+      description: Returned on every non-2xx response. Always read `message` rather than relying on the status code alone.
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Invalid printer
+
+    PrinterHan:
+      type: string
+      description: >-
+        Multi-byte script used to compose the job. Required for Chinese,
+        Japanese and Korean text — without it every such character is
+        replaced with `?` before the job reaches the printer. Omit for Latin
+        scripts. `1` is accepted as a legacy synonym of `cn`.
+      enum: [cn, kr, jp, "1"]
+
+    Printer:
+      type: object
+      required:
+        - printer_uid
+        - printer_name
+        - printer_status
+        - printer_width
+        - printer_graphic_mode
+        - printer_print_mode
+      properties:
+        printer_uid:
+          type: string
+          description: Unique ID used in `POST /printers/{printer_uid}/print`.
+          example: UP3VS5JXRYA
+        printer_name:
+          type: string
+          description: Human name configured in the Expedy console.
+          example: Lobby
+        printer_status:
+          type: string
+          description: >-
+            `"1"` active, `"0"` suspended. An administrative flag controlled
+            solely by ExpedyPRINT — not a live connectivity indicator.
+          example: "1"
+        printer_width:
+          type: string
+          description: Paper width in millimetres.
+          enum: ["58", "80", "104"]
+        printer_graphic_mode:
+          type: string
+          description: "`\"0\"` Graphics (default), `\"1\"` BitImageRaster, `\"2\"` BitImageColumn."
+          enum: ["0", "1", "2"]
+        printer_print_mode:
+          type: string
+          description: Numeric code for the printer's print mode (device-specific configuration).
+
+    CreatePrintJobRequest:
+      type: object
+      required: [printer_msg]
+      properties:
+        printer_msg:
+          type: string
+          description: >-
+            The content to print, built with the receipt layout tags (`<C>`,
+            `<BOLD>`, `<IMG>`, `<QR>`, `<CUT/>`, …).
+          example: "<C><BOLD>ORDER #1234</BOLD></C><BR><CUT/>"
+        origin:
+          type: string
+          description: Free-form label to tag the source of the job.
+        printer_han:
+          $ref: "#/components/schemas/PrinterHan"
+
+    CreatePrintJobResponse:
+      type: object
+      required: [request_uid]
+      properties:
+        request_uid:
+          type: string
+          description: Unique identifier of the accepted print job.
+          example: 2XVXPN95E7RHYFJZCGMK8DSB634
+        request_timestamp:
+          type: string
+          description: >-
+            Unix timestamp (seconds) when the platform accepted the job.
+            Returned by the API but not part of the documented response
+            contract — treat as optional.
+
+    Device:
+      type: object
+      required:
+        - device_uid
+        - version
+        - last_ping
+        - rpi_nickname
+        - rpi_disk_size
+        - rpi_vid_list
+      properties:
+        device_uid:
+          type: string
+          description: Unique ID used in all `/devices/{device_uid}/…` endpoints.
+          example: MMAAZ112PI
+        version:
+          type: string
+          description: Firmware version currently running on the Pi.
+        last_ping:
+          type: string
+          description: Unix timestamp (seconds) of the last successful ping.
+        rpi_nickname:
+          type: string
+          description: Human name configured in the Expedy console.
+        rpi_disk_size:
+          type: string
+          description: Total disk size of the device, in GB.
+        rpi_vid_list:
+          type: string
+          description: >-
+            Semicolon-separated list of media/display IDs bound to this
+            device. Belongs to the `displays` / `medias` resources,
+            documented separately.
+
+    DeviceLastPing:
+      type: object
+      required: [last_ping]
+      properties:
+        last_ping:
+          type: integer
+          description: >-
+            Unix timestamp (seconds) of the device's last contact with the
+            server. A value far in the past means the device was not online.
+          example: 1641509604
+
+    UsbPortEntry:
+      type: object
+      required: [usb_port, usb_status]
+      properties:
+        usb_port:
+          type: integer
+          description: Port number (1–4).
+        usb_status:
+          type: integer
+          description: "`1` if a printer is detected on this port, `0` otherwise."
+        device_manufacturer:
+          type: string
+          description: Manufacturer string reported by the attached printer.
+        device_model:
+          type: string
+          description: Model string reported by the attached printer.
+        device_width:
+          type: integer
+          description: Printer paper width in millimetres, when detected.
+
+    UsbConfigurationResponse:
+      type: object
+      required: [last_ping]
+      properties:
+        last_ping:
+          type: integer
+          description: Unix timestamp (seconds) of the last device ping.
+        usb_conf:
+          type: array
+          description: One entry per USB port (up to 4, depending on the device model).
+          items:
+            $ref: "#/components/schemas/UsbPortEntry"
+        usb_scan:
+          type: array
+          description: Present on `GET /usb/scan/read` responses on some firmware versions.
+          items:
+            $ref: "#/components/schemas/UsbPortEntry"
+
+    CreateUsbPrintJobRequest:
+      type: object
+      required: [usb_msg]
+      properties:
+        usb_msg:
+          type: string
+          description: >-
+            Payload sent to the printer. For ESC/POS thermal printers, the
+            same tag language as `printer_msg`. For label / PDF printers, the
+            raw HTTPS URL of the PDF (no tag wrapper).
+          example: "<C><BOLD>ORDER #1234</BOLD></C><BR><CUT/>"
+        notification_url:
+          type: string
+          format: uri
+          description: URL the print service calls once it has handed the job to the printer.
+        origin:
+          type: string
+          description: Free-form label to tag the source of the job.
+        printer_han:
+          $ref: "#/components/schemas/PrinterHan"
+
+    CreateUsbPrintJobResponse:
+      type: object
+      required: [last_ping, request_uid]
+      properties:
+        last_ping:
+          type: integer
+          description: >-
+            Unix timestamp (seconds) of the device's last contact with the
+            server. A value far in the past means the device was not online
+            when the job was sent.
+        request_uid:
+          type: string
+          description: Unique identifier of the accepted print job.
+          example: 1X5ERXL94BYVWHP92DK3MCASUGJ
+
+    WifiEntry:
+      type: object
+      required: [wifi_id, wifi_ssid, wifi_psk]
+      properties:
+        wifi_id:
+          type: integer
+          description: Unique ID used by "delete SSID".
+        wifi_ssid:
+          type: string
+          description: Network name.
+        wifi_psk:
+          type: string
+          description: Pre-shared key (masked with `*` in the response).
+
+    WifiConfigurationResponse:
+      type: object
+      required: [last_ping, wifi_conf]
+      properties:
+        status:
+          type: string
+        last_ping:
+          type: integer
+          description: Unix timestamp (seconds) of the last device ping.
+        wifi_conf:
+          type: array
+          items:
+            $ref: "#/components/schemas/WifiEntry"
+
+    AddSsidRequest:
+      type: object
+      required: [wifi_ssid, wifi_psk]
+      properties:
+        wifi_ssid:
+          type: string
+          description: Network name.
+        wifi_psk:
+          type: string
+          description: Pre-shared key.
