@@ -67,7 +67,7 @@ are handled in the default single-byte mode.
 If accents specifically come out wrong on an Expedy cloud printer, that is a **code page**
 problem, not a `printer_han` one: set the printer's code page to `CP437` with the
 PrinterSetting software. See
-[Text encoding settings](https://docs.expedy.io/expedy-print/installation/text-encoding-settings).
+[Text encoding settings](https://docs.expedy.io/en/expedy-print/installation/text-encoding-settings).
 
 ## Always send UTF-8
 
